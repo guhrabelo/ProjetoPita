@@ -38,6 +38,9 @@ public class Usuario {
 	@Email(message = "O atributo deve ser um e-mail")
 	private String userName;
 	
+	@NotNull
+	private String senha;
+	
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("usuario")
 	private List <Agendamento> agendamento;
@@ -102,6 +105,22 @@ public class Usuario {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public List<Agendamento> getAgendamento() {
+		return agendamento;
+	}
+
+	public void setAgendamento(List<Agendamento> agendamento) {
+		this.agendamento = agendamento;
 	}
 	
 }
