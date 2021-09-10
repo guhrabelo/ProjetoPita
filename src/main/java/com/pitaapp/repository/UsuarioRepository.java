@@ -11,8 +11,8 @@ import com.pitaapp.model.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository <Usuario, Integer>{
 	public List<Usuario> findAllByNomeContainingIgnoreCase(String nome);
-	
-	public Optional <Usuario> findAllByCpfContainigIgnoreCase(String cpf);
+
+	public Optional <Usuario> findAllByCpfContainingIgnoreCase(String cpf);
 	
 	public Optional <Usuario> findByUserName(String userName);
 }

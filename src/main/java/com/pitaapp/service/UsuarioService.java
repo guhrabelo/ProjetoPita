@@ -33,7 +33,7 @@ public class UsuarioService {
 				 * Quando uma Exception é lançada, o programa para a execução.
 				 **/
 			}
-			if(repository.findAllByCpfContainigIgnoreCase(usuario.getCpf()).isPresent()) {
+			if(repository.findAllByCpfContainingIgnoreCase(usuario.getCpf()).isPresent()) {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registro já existe", null);
 				
 				/**
