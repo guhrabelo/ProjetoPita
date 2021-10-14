@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pitaapp.model.Agendamento;
 import com.pitaapp.repository.AgendamentoRepository;
+import com.pitaapp.service.AgendamentoService;
 
 @RestController
 @RequestMapping("/agendamento")
@@ -23,6 +24,9 @@ public class AgendamentoController {
 	@Autowired
 	AgendamentoRepository repository;
 	
+	@Autowired
+	AgendamentoService service;
+	
 	@GetMapping("/all")
 	public ResponseEntity<List<Agendamento>> getAll(){
 		return ResponseEntity.ok(repository.findAll());
@@ -30,7 +34,7 @@ public class AgendamentoController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<List<Agendamento>> getAllAgendamentoByUser(@PathVariable int id){
-		return ResponseEntity.ok(repository.findUserLike(id));
+		return ResponseEntity.ok(service.findByUser(id));
 	}
 	
 	public ResponseEntity<Agendamento> postAgendamento(@RequestBody Agendamento agendamento){
