@@ -12,6 +12,6 @@ import com.pitaapp.model.Usuario;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Integer>{
 //	public List<Agendamento> findAllByDataContainingIgnoreCase(String data);
 //	
-//	public List<Agendamento> findAllByUsuarioContainingIgnoreCase(Usuario usuario);
+	public List<Agendamento> findUserLike(int idUsuario);
 	// TODO Method vamo implementar depois
 }
