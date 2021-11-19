@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -28,10 +30,10 @@ public class Usuario {
 	@NotNull
 	private String nome;
 	
-	@NotNull
+	
 	private String dataNascimento;
 	
-	@NotNull
+	
 	private String telefone;
 	
 	@NotNull
@@ -40,17 +42,16 @@ public class Usuario {
 	
 	@NotNull
 	private String senha;
-	
-	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("usuario")
-	private List <Agendamento> agendamento;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List <Agendamento> agendamentos;
 	
 	public Usuario() {
 		super();
 	}
 
 	public Usuario(int idUsuario, @NotNull String cpf, @NotNull String nome, @NotNull String dataNascimento, String telefone, String userName) {
-		super();
 		this.idUsuario = idUsuario;
 		this.cpf = cpf;
 		this.nome = nome;
@@ -116,11 +117,11 @@ public class Usuario {
 	}
 
 	public List<Agendamento> getAgendamento() {
-		return agendamento;
+		return agendamentos;
 	}
 
 	public void setAgendamento(List<Agendamento> agendamento) {
-		this.agendamento = agendamento;
+		this.agendamentos = agendamento;
 	}
 	
 }

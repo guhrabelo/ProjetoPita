@@ -1,6 +1,7 @@
 package com.pitaapp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,22 +12,32 @@ import com.pitaapp.model.Agendamento;
 import com.pitaapp.model.Usuario;
 import com.pitaapp.repository.UsuarioRepository;
 
+/*Atribuição dos agendamentos no user*/
+
 @Service
 public class AgendamentoService {
 	
 	@Autowired
 	UsuarioRepository userRepository;
+	@Autowired
+	UsuarioService userService;
 	
 	public List<Agendamento> findByUser(int idUser) {
-		Usuario user = new Usuario();
+		Usuario usuario = new Usuario();
 		
-		user = userRepository.getById(idUser);
+		Optional<Usuario> user = userRepository.findById(idUser);
 		
-		if(user != null) {
-			return user.getAgendamento();
-		}else{
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe agendamentos para este user.", null);
-		}
+		usuario = user.get();
+		System.out.println(usuario.getAgendamento());
+		
+		return usuario.getAgendamento();
+
+		
+		
 	}
+	
+//	public void atribui(Agendamento agendamento) {
+//		userService.atribuiAgendamento(agendamento);
+//	}
 	
 }

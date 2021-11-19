@@ -1,6 +1,8 @@
 package com.pitaapp.service;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.pitaapp.model.Agendamento;
 import com.pitaapp.model.UserLogin;
 import com.pitaapp.model.Usuario;
 import com.pitaapp.repository.UsuarioRepository;
@@ -24,6 +27,25 @@ public class UsuarioService {
 	
 		@Autowired
 		private UsuarioRepository repository;
+		
+//		public void atribuiAgendamento(Agendamento novoAgendamento){
+//			
+//			
+//			Usuario usuario = new Usuario();
+//			usuario = novoAgendamento.getUsuario();
+//			List<Agendamento> agendamentos = repository.findAllAgendamentoByIdUsuario(usuario.getIdUsuario());
+//			
+//			Optional<Usuario> user = repository.findById(usuario.getIdUsuario());
+//			
+//			
+//			if(user!=null) {
+//				usuario = user.get();
+//				usuario.setAgendamento(agendamentos);
+//				System.out.println("Atribuido");
+//			}else {
+//				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Erro ao atribuir agendamentos ao User", null);
+//			}
+//		}
 
 		public Usuario CadastrarUsuario(Usuario usuario) {
 			
