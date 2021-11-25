@@ -22,7 +22,7 @@ public class AgendamentoService {
 	@Autowired
 	UsuarioService userService;
 	
-	public List<Agendamento> findByUser(int idUser) {
+	public List<Agendamento> findByUser(int idUser /*receber o agendamento como parametro tbm*/) {
 		Usuario usuario = new Usuario();
 		
 		Optional<Usuario> user = userRepository.findById(idUser);

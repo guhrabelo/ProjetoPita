@@ -1,14 +1,21 @@
 package com.pitaapp.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,15 +37,32 @@ public class Agendamento {
 	@NotNull
 	private String statusAgendamento;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name="agendamento_servico", joinColumns = {
+			@JoinColumn(name="fk_agendamento")
+	}, inverseJoinColumns = { @JoinColumn(name="fk_servico") })
 	@JsonIgnore
-	private Servico servico;
+	private List<Servico> servicos;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
 	private Usuario usuario;
 
 	
+	public Agendamento(String dataAgendamento, String horario, List<Servico> servico, Usuario user) {
+		this.dataAgendamento = dataAgendamento;
+		this.horario = horario;
+		this.servicos = servico;
+		this.usuario = user;
+		this.statusAgendamento = "Aguardando";
+	}
+	
+
+	public Agendamento() {
+		super();
+	}
+
+
 	public int getIdAgendamento() {
 		return idAgendamento;
 	}
@@ -72,12 +96,12 @@ public class Agendamento {
 		this.statusAgendamento = statusAgendamento;
 	}
 
-	public Servico getServico() {
-		return servico;
+	public List<Servico> getServico() {
+		return servicos;
 	}
 
-	public void setServico(Servico servico) {
-		this.servico = servico;
+	public void setServico(List<Servico> servicos) {
+		this.servicos = servicos;
 	}
 	
 }

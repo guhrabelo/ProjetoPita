@@ -1,5 +1,6 @@
-package com.pitaapp.controller;
+ package com.pitaapp.controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pitaapp.model.Agendamento;
+import com.pitaapp.model.AgendamentoForm;
 import com.pitaapp.repository.AgendamentoRepository;
-import com.pitaapp.service.AgendamentoService;
-import com.pitaapp.service.UsuarioService;
+import com.pitaapp.repository.ServicoRepository;
+import com.pitaapp.repository.UsuarioRepository;
+
 
 @RestController
 @RequestMapping("/agendamento")
@@ -27,7 +31,10 @@ public class AgendamentoController {
 	@Autowired
 	AgendamentoRepository repository;
 	@Autowired
-	AgendamentoService service;
+	ServicoRepository servicoRepository;
+	@Autowired
+	UsuarioRepository userRepository;
+	
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<Agendamento>> getAll(){
@@ -35,13 +42,21 @@ public class AgendamentoController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Optional<Agendamento>> getAllAgendamentoByUser(@PathVariable int id){
-		return ResponseEntity.ok(repository.findById(id));
+	public ResponseEntity<List<Agendamento>> getAllAgendamentoByUser(@PathVariable int id){
+		return ResponseEntity.ok(repository.findAllByUsuario(id));
 	}
 	
 	@PostMapping
-	public ResponseEntity<Agendamento> postAgendamento(@RequestBody Agendamento agendamento){
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(agendamento));
+	public ResponseEntity<Agendamento> postAgendamento(@RequestBody AgendamentoForm agendamentoForm, UriComponentsBuilder uriBuilder){
+		
+		Agendamento agendamento = agendamentoForm.convert(userRepository, servicoRepository);
+		
+		repository.save(agendamento);
+		
+		URI uri = uriBuilder.path("/agendameto/{id}").buildAndExpand(agendamento.getIdAgendamento()).toUri();
+		
+		return ResponseEntity.created(uri).body(agendamento);
+		
 	}
 	
 	@PutMapping

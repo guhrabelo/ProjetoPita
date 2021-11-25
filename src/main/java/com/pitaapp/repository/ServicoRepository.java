@@ -15,4 +15,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Integer> {
 //	
 //	public List<Servico> findAllByPrecoServicoContainingIgnoreCase(Double precoServico);
 	// TODO Method vamo implementar depois
+
+	public Servico findByNomeServico(String servico);
 }

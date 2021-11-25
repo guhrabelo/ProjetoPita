@@ -27,25 +27,6 @@ public class UsuarioService {
 	
 		@Autowired
 		private UsuarioRepository repository;
-		
-//		public void atribuiAgendamento(Agendamento novoAgendamento){
-//			
-//			
-//			Usuario usuario = new Usuario();
-//			usuario = novoAgendamento.getUsuario();
-//			List<Agendamento> agendamentos = repository.findAllAgendamentoByIdUsuario(usuario.getIdUsuario());
-//			
-//			Optional<Usuario> user = repository.findById(usuario.getIdUsuario());
-//			
-//			
-//			if(user!=null) {
-//				usuario = user.get();
-//				usuario.setAgendamento(agendamentos);
-//				System.out.println("Atribuido");
-//			}else {
-//				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Erro ao atribuir agendamentos ao User", null);
-//			}
-//		}
 
 		public Usuario CadastrarUsuario(Usuario usuario) {
 			
@@ -85,6 +66,7 @@ public class UsuarioService {
 					user.get().setToken(authHeader);				
 					user.get().setNome(usuario.get().getNome());
 					user.get().setSenha(usuario.get().getSenha());
+					user.get().setTelefone(usuario.get().getTelefone());
 
 					return user;
 

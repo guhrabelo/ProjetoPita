@@ -17,5 +17,5 @@ public interface UsuarioRepository extends JpaRepository <Usuario, Integer>{
 	
 	public Optional <Usuario> findByUserName(String userName);
 	
-	public List<Agendamento> findAllAgendamentoByIdUsuario(int id);
+//	public List<Agendamento> findAllAgendamentoByIdUsuario(int id);
 }
