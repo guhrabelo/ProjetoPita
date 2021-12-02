@@ -2,6 +2,8 @@ package com.pitaapp.model;
 
 public class UserLogin {
 
+	private int id;
+	
 	private String nome;
 	
 	private String telefone;
@@ -51,6 +53,15 @@ public class UserLogin {
 	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	
 	
 }

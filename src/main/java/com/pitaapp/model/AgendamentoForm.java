@@ -60,7 +60,7 @@ public class AgendamentoForm {
 	
 	public Agendamento convert(UsuarioRepository repository, ServicoRepository serviceRepository) {
 		
-		Usuario user = repository.findByUserName(usuario).get();
+		Usuario user = repository.findByUserNameContainingIgnoreCase(usuario).get();
 		
 		List<Servico> services = new ArrayList<>();
 		

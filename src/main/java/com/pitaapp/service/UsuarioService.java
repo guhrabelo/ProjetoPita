@@ -19,59 +19,90 @@ import com.pitaapp.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
-	
+
 	/**
-	 * Essa classe serve para realizar toda a regra de controler no usuário.
-	 * Logo o repository é injetado nela e ela é injetada no controller.*/
+	 * Essa classe serve para realizar toda a regra de controler no usuário. Logo o
+	 * repository é injetado nela e ela é injetada no controller.
+	 */
 
-	
-		@Autowired
-		private UsuarioRepository repository;
+	@Autowired
+	private UsuarioRepository repository;
 
-		public Usuario CadastrarUsuario(Usuario usuario) {
-			
-			if(repository.findByUserName(usuario.getUserName()).isPresent()) { // Verifica se o user já existe
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User já existe", null);
-				/**
-				 * Quando uma Exception é lançada, o programa para a execução.
-				 **/
-			}
-			if(repository.findAllByCpfContainingIgnoreCase(usuario.getCpf()).isPresent()) {
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registro já existe", null);
-				
-				/**
-				 * Verifica o registro*/
-			}
-			
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // Objeto que criptografa as senhas
+	public Usuario CadastrarUsuario(Usuario usuario) {
 
-			String senhaEncoder = encoder.encode(usuario.getSenha()); // Var aux para inserir senha encriptada
-			usuario.setSenha(senhaEncoder); // substituindo senha normal pela criptografada
+		if (repository.findByUserNameContainingIgnoreCase(usuario.getUserName()).isPresent()) { // Verifica se o user já existe
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User já existe", null);
+			/**
+			 * Quando uma Exception é lançada, o programa para a execução.
+			 **/
+		}
+		if (repository.findAllByCpfContainingIgnoreCase(usuario.getCpf()).isPresent()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registro já existe", null);
 
-			return repository.save(usuario); // salvando no banco de dados
+			/**
+			 * Verifica o registro
+			 */
 		}
 
-		public Optional<UserLogin> Logar(Optional<UserLogin> user) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // Objeto que criptografa as senhas
 
-			BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-			Optional<Usuario> usuario = repository.findByUserName(user.get().getUserName());
+		String senhaEncoder = encoder.encode(usuario.getSenha()); // Var aux para inserir senha encriptada
+		usuario.setSenha(senhaEncoder); // substituindo senha normal pela criptografada
 
-			if (usuario.isPresent()) {
-				if (encoder.matches(user.get().getSenha(), usuario.get().getSenha())) {  // o matches faz o comparativo da senhas digitada no front para senha criptografada no banco
+		return repository.save(usuario); // salvando no banco de dados
+	}
 
-					String auth = user.get().getUserName() + ":" + user.get().getSenha();
-					byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-					String authHeader = "Basic " + new String(encodedAuth);
+	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
 
-					user.get().setToken(authHeader);				
-					user.get().setNome(usuario.get().getNome());
-					user.get().setSenha(usuario.get().getSenha());
-					user.get().setTelefone(usuario.get().getTelefone());
+		if (repository.findById(usuario.getIdUsuario()).isPresent()) {
 
-					return user;
+			Optional<Usuario> buscaUsuario = repository.findByUserNameContainingIgnoreCase(usuario.getUserName());
 
-				}
+			if (buscaUsuario.isPresent()) {
+				if (buscaUsuario.get().getIdUsuario() != usuario.getIdUsuario())
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O Usuário já existe!", null);
 			}
-			return Optional.ofNullable(null);
+
+			usuario.setSenha(criptografarSenha(usuario.getSenha()));
+
+			return Optional.of(repository.save(usuario));
 		}
+
+		return Optional.empty();
+	}
+
+	public Optional<UserLogin> Logar(Optional<UserLogin> user) {
+
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		Optional<Usuario> usuario = repository.findByUserNameContainingIgnoreCase(user.get().getUserName());
+
+		if (usuario.isPresent()) {
+			if (encoder.matches(user.get().getSenha(), usuario.get().getSenha())) { // o matches faz o comparativo da
+																					// senhas digitada no front para
+																					// senha criptografada no banco
+
+				String auth = user.get().getUserName() + ":" + user.get().getSenha();
+				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+				String authHeader = "Basic " + new String(encodedAuth);
+
+				user.get().setToken(authHeader);
+				user.get().setNome(usuario.get().getNome());
+				user.get().setSenha(usuario.get().getSenha());
+				user.get().setTelefone(usuario.get().getTelefone());
+				user.get().setId(usuario.get().getIdUsuario());
+
+				return user;
+
+			}
+		}
+		return Optional.ofNullable(null);
+	}
+
+	private String criptografarSenha(String senha) {
+
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+		return encoder.encode(senha);
+
+	}
 }
