@@ -1,5 +1,6 @@
 package com.pitaapp.controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pitaapp.model.UserLogin;
 import com.pitaapp.model.Usuario;
+import com.pitaapp.model.UsuarioAtualizarForm;
 import com.pitaapp.repository.UsuarioRepository;
 import com.pitaapp.service.UsuarioService;
 
@@ -25,32 +28,39 @@ import com.pitaapp.service.UsuarioService;
 @RequestMapping("/usuario")
 @CrossOrigin(value = "*", allowedHeaders = "*")
 public class UsuarioController {
-	
+
 	@Autowired
 	private UsuarioService usuarioService;
 	@Autowired
-	private UsuarioRepository UsuarioRepository;
-	
+	private UsuarioRepository usuarioRepository;
+
 	@PostMapping("/logar")
-	public ResponseEntity<UserLogin> Autentication(@RequestBody Optional<UserLogin> user){
-		return usuarioService.Logar(user).map(resposta -> ResponseEntity.ok(resposta)).orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+	public ResponseEntity<UserLogin> Autentication(@RequestBody Optional<UserLogin> user) {
+		return usuarioService.Logar(user).map(resposta -> ResponseEntity.ok(resposta))
+				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
-	
+
 	@PostMapping("/cadastrar")
-	public ResponseEntity<Usuario> Post(@Valid @RequestBody Usuario user){
+	public ResponseEntity<Usuario> Post(@Valid @RequestBody Usuario user) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.CadastrarUsuario(user));
 	}
-	
+
 	@PutMapping("/atualizar")
-	public ResponseEntity<Usuario> putUsuario(@RequestBody Usuario usuario){		
-		return usuarioService.atualizarUsuario(usuario)
-			.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(resposta))
-			.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+	public ResponseEntity<Usuario> putUsuario(@RequestBody UsuarioAtualizarForm usuarioForm,  UriComponentsBuilder uriBuilder) {
+
+		Usuario usuario = usuarioForm.converter(usuarioRepository);
+
+		usuarioService.atualizarUsuario(usuario, usuarioForm);
+
+		URI uri = uriBuilder.path("/usuario/atualizar").buildAndExpand(usuario.getIdUsuario()).toUri();
+
+		return ResponseEntity.created(uri).body(usuario);
+
 	}
-	
+
 	@GetMapping("/all")
-	public ResponseEntity<List<Usuario>> all(){
-		return ResponseEntity.ok(UsuarioRepository.findAll());
+	public ResponseEntity<List<Usuario>> all() {
+		return ResponseEntity.ok(usuarioRepository.findAll());
 	}
-	
+
 }

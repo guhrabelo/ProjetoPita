@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.pitaapp.model.Agendamento;
 import com.pitaapp.model.UserLogin;
 import com.pitaapp.model.Usuario;
+import com.pitaapp.model.UsuarioAtualizarForm;
 import com.pitaapp.repository.UsuarioRepository;
 
 @Service
@@ -30,7 +31,8 @@ public class UsuarioService {
 
 	public Usuario CadastrarUsuario(Usuario usuario) {
 
-		if (repository.findByUserNameContainingIgnoreCase(usuario.getUserName()).isPresent()) { // Verifica se o user já existe
+		if (repository.findByUserNameContainingIgnoreCase(usuario.getUserName()).isPresent()) { // Verifica se o user já
+																								// existe
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User já existe", null);
 			/**
 			 * Quando uma Exception é lançada, o programa para a execução.
@@ -52,20 +54,18 @@ public class UsuarioService {
 		return repository.save(usuario); // salvando no banco de dados
 	}
 
-	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
+	public Optional<Usuario> atualizarUsuario(Usuario usuario, UsuarioAtualizarForm usuarioForm) {
+
 
 		if (repository.findById(usuario.getIdUsuario()).isPresent()) {
 
-			Optional<Usuario> buscaUsuario = repository.findByUserNameContainingIgnoreCase(usuario.getUserName());
+				Optional<UserLogin> login = Optional.ofNullable(new UserLogin(usuario.getIdUsuario() ,usuario.getNome(),usuario.getUserName(),usuario.getSenha(),usuario.getTelefone()));
 
-			if (buscaUsuario.isPresent()) {
-				if (buscaUsuario.get().getIdUsuario() != usuario.getIdUsuario())
-					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O Usuário já existe!", null);
-			}
+				Logar(login);
 
-			usuario.setSenha(criptografarSenha(usuario.getSenha()));
+				return Optional.of(repository.save(usuario));
 
-			return Optional.of(repository.save(usuario));
+
 		}
 
 		return Optional.empty();
@@ -98,11 +98,5 @@ public class UsuarioService {
 		return Optional.ofNullable(null);
 	}
 
-	private String criptografarSenha(String senha) {
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-		return encoder.encode(senha);
-
-	}
 }
