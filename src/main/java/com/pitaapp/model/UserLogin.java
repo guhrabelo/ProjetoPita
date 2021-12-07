@@ -13,6 +13,16 @@ public class UserLogin {
 	private String senha;
 	
 	private String token;
+	
+	
+
+	public UserLogin(int id, String nome, String telefone, String userName, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.telefone = telefone;
+		this.userName = userName;
+		this.senha = senha;
+	}
 
 	public String getNome() {
 		return nome;

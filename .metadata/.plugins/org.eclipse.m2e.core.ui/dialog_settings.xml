@@ -2,6 +2,7 @@
 <section name="Workbench">
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="D:\Arquivos\Alura\Projeto\ProjetoPita-Backend - Deploy"/>
 			<item value="D:\Arquivos\Alura\ProjetoPita"/>
 			<item value="D:\Arquivos\Alura\projeto-pita\ProjetoPita"/>
 		</list>
