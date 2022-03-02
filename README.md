@@ -5,7 +5,7 @@
 ### Cheacklist de features:
 
 - [ ] Melhoras no Login
-- [] Reformular banco de dados
-- [] Utilizar métricas para geração de dados
-- [] Configuração do Grafana/ Prometheus
+- [ ] Reformular banco de dados
+- [ ] Utilizar métricas para geração de dados
+- [ ] Configuração do Grafana/ Prometheus
 
