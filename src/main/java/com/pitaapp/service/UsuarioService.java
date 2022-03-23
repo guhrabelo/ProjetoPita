@@ -1,8 +1,6 @@
 package com.pitaapp.service;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
@@ -12,10 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.pitaapp.model.Agendamento;
 import com.pitaapp.model.UserLogin;
 import com.pitaapp.model.Usuario;
-import com.pitaapp.model.UsuarioAtualizarForm;
+import com.pitaapp.dto.UsuarioAtualizarForm;
 import com.pitaapp.repository.UsuarioRepository;
 
 @Service

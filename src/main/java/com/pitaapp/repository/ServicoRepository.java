@@ -1,20 +1,14 @@
 package com.pitaapp.repository;
 
-import java.util.List;
-
+import com.pitaapp.model.Servico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.pitaapp.model.Servico;
+import java.util.List;
 
 @Repository
 public interface ServicoRepository extends JpaRepository<Servico, Integer> {
-//	public List<Servico> findAllByNomeServicoContainingIgnoreCase(String nomeServico);
-//	
-	public List<Servico> findAllByTempoServicoContainingIgnoreCase(String tempoServico);
-//	
-//	public List<Servico> findAllByPrecoServicoContainingIgnoreCase(Double precoServico);
-	// TODO Method vamo implementar depois
+    List<Servico> findAllByTempoServicoContainingIgnoreCase(String tempoServico);
 
-	public Servico findByNomeServico(String servico);
+    Servico findByNomeServico(String servico);
 }

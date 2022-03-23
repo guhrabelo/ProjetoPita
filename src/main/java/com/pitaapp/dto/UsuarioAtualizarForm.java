@@ -1,7 +1,8 @@
-package com.pitaapp.model;
+package com.pitaapp.dto;
 
 import java.util.Optional;
 
+import com.pitaapp.model.Usuario;
 import com.pitaapp.repository.UsuarioRepository;
 
 public class UsuarioAtualizarForm {
