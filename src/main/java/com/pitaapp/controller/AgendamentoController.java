@@ -1,5 +1,6 @@
 package com.pitaapp.controller;
 
+import com.pitaapp.form.AgendamentoAtualizarForm;
 import com.pitaapp.form.AgendamentoForm;
 import com.pitaapp.model.Agendamento;
 import com.pitaapp.repository.AgendamentoRepository;
@@ -39,18 +40,15 @@ public class AgendamentoController {
     public ResponseEntity<Agendamento> postAgendamento(@RequestBody AgendamentoForm agendamentoForm, UriComponentsBuilder uriBuilder) {
 
         Agendamento agendamento = agendamentoService.convert(agendamentoForm);
-
         repository.save(agendamento);
-
         URI uri = uriBuilder.path("/agendameto/{id}").buildAndExpand(agendamento.getIdAgendamento()).toUri();
 
         return ResponseEntity.created(uri).body(agendamento);
-
     }
 
     @PutMapping
-    public ResponseEntity<Agendamento> putAgendamento(@RequestBody Agendamento agendamento) {
-        return ResponseEntity.status(HttpStatus.OK).body(repository.save(agendamento));
+    public ResponseEntity<Agendamento> putAgendamento(@RequestBody AgendamentoAtualizarForm agendamentoAtualizarForm) {
+        return ResponseEntity.status(HttpStatus.OK).body(agendamentoService.alterarAgendamento(agendamentoAtualizarForm));
     }
 
     @DeleteMapping("/{id}")
