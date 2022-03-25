@@ -1,6 +1,6 @@
 package com.pitaapp.controller;
 
-import com.pitaapp.dto.UsuarioAtualizarForm;
+import com.pitaapp.form.UsuarioAtualizarForm;
 import com.pitaapp.model.UserLogin;
 import com.pitaapp.model.Usuario;
 import com.pitaapp.repository.UsuarioRepository;
@@ -38,11 +38,11 @@ public class UsuarioController {
     }
 
     @PutMapping("/atualizar")
-    public ResponseEntity<Usuario> putUsuario(@RequestBody UsuarioAtualizarForm usuarioForm, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Usuario> putUsuario(@RequestBody UsuarioAtualizarForm usuarioUpdateForm, UriComponentsBuilder uriBuilder) {
 
-        Usuario usuario = usuarioForm.converter(usuarioRepository);
+        Usuario usuario = usuarioService.converterUserUpdateForm(usuarioUpdateForm);
 
-        usuarioService.atualizarUsuario(usuario, usuarioForm);
+        usuarioService.atualizarUsuario(usuario, usuarioUpdateForm);
 
         URI uri = uriBuilder.path("/usuario/atualizar").buildAndExpand(usuario.getIdUsuario()).toUri();
 

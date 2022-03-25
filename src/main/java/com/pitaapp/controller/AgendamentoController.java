@@ -1,10 +1,9 @@
 package com.pitaapp.controller;
 
-import com.pitaapp.dto.AgendamentoForm;
+import com.pitaapp.form.AgendamentoForm;
 import com.pitaapp.model.Agendamento;
 import com.pitaapp.repository.AgendamentoRepository;
-import com.pitaapp.repository.ServicoRepository;
-import com.pitaapp.repository.UsuarioRepository;
+import com.pitaapp.service.AgendamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +22,7 @@ public class AgendamentoController {
     @Autowired
     AgendamentoRepository repository;
     @Autowired
-    ServicoRepository servicoRepository;
-    @Autowired
-    UsuarioRepository userRepository;
+    AgendamentoService agendamentoService;
 
 
     @GetMapping("/all")
@@ -41,7 +38,7 @@ public class AgendamentoController {
     @PostMapping
     public ResponseEntity<Agendamento> postAgendamento(@RequestBody AgendamentoForm agendamentoForm, UriComponentsBuilder uriBuilder) {
 
-        Agendamento agendamento = agendamentoForm.convert(userRepository, servicoRepository);
+        Agendamento agendamento = agendamentoService.convert(agendamentoForm);
 
         repository.save(agendamento);
 

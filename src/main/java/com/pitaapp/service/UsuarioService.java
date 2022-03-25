@@ -1,8 +1,9 @@
 package com.pitaapp.service;
 
-import java.nio.charset.Charset;
-import java.util.Optional;
-
+import com.pitaapp.form.UsuarioAtualizarForm;
+import com.pitaapp.model.UserLogin;
+import com.pitaapp.model.Usuario;
+import com.pitaapp.repository.UsuarioRepository;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,90 +11,104 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.pitaapp.model.UserLogin;
-import com.pitaapp.model.Usuario;
-import com.pitaapp.dto.UsuarioAtualizarForm;
-import com.pitaapp.repository.UsuarioRepository;
+import java.nio.charset.Charset;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
-	/**
-	 * Essa classe serve para realizar toda a regra de controler no usuário. Logo o
-	 * repository é injetado nela e ela é injetada no controller.
-	 */
+    /**
+     * Essa classe serve para realizar toda a regra de controler no usuário. Logo o
+     * repository é injetado nela e ela é injetada no controller.
+     */
 
-	@Autowired
-	private UsuarioRepository repository;
+    @Autowired
+    private UsuarioRepository repository;
 
-	public Usuario CadastrarUsuario(Usuario usuario) {
+    public Usuario CadastrarUsuario(Usuario usuario) {
 
-		if (repository.findByUserNameContainingIgnoreCase(usuario.getUserName()).isPresent()) { // Verifica se o user já
-																								// existe
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User já existe", null);
-			/**
-			 * Quando uma Exception é lançada, o programa para a execução.
-			 **/
-		}
-		if (repository.findAllByCpfContainingIgnoreCase(usuario.getCpf()).isPresent()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registro já existe", null);
+        if (repository.findByUserNameContainingIgnoreCase(usuario.getUserName()).isPresent()) { // Verifica se o user já
+            // existe
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User já existe", null);
+            /**
+             * Quando uma Exception é lançada, o programa para a execução.
+             **/
+        }
+        if (repository.findAllByCpfContainingIgnoreCase(usuario.getCpf()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Registro já existe", null);
 
-			/**
-			 * Verifica o registro
-			 */
-		}
+            /**
+             * Verifica o registro
+             */
+        }
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // Objeto que criptografa as senhas
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(); // Objeto que criptografa as senhas
 
-		String senhaEncoder = encoder.encode(usuario.getSenha()); // Var aux para inserir senha encriptada
-		usuario.setSenha(senhaEncoder); // substituindo senha normal pela criptografada
+        String senhaEncoder = encoder.encode(usuario.getSenha()); // Var aux para inserir senha encriptada
+        usuario.setSenha(senhaEncoder); // substituindo senha normal pela criptografada
 
-		return repository.save(usuario); // salvando no banco de dados
-	}
+        return repository.save(usuario); // salvando no banco de dados
+    }
 
-	public Optional<Usuario> atualizarUsuario(Usuario usuario, UsuarioAtualizarForm usuarioForm) {
-
-
-		if (repository.findById(usuario.getIdUsuario()).isPresent()) {
-
-				Optional<UserLogin> login = Optional.ofNullable(new UserLogin(usuario.getIdUsuario() ,usuario.getNome(),usuario.getUserName(),usuario.getSenha(),usuario.getTelefone()));
-
-				Logar(login);
-
-				return Optional.of(repository.save(usuario));
+    public Optional<Usuario> atualizarUsuario(Usuario usuario, UsuarioAtualizarForm usuarioForm) {
 
 
-		}
+        if (repository.findById(usuario.getIdUsuario()).isPresent()) {
 
-		return Optional.empty();
-	}
+            Optional<UserLogin> login = Optional.ofNullable(new UserLogin(usuario.getIdUsuario(), usuario.getNome(), usuario.getUserName(), usuario.getSenha(), usuario.getTelefone()));
 
-	public Optional<UserLogin> Logar(Optional<UserLogin> user) {
+            Logar(login);
 
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		Optional<Usuario> usuario = repository.findByUserNameContainingIgnoreCase(user.get().getUserName());
+            return Optional.of(repository.save(usuario));
 
-		if (usuario.isPresent()) {
-			if (encoder.matches(user.get().getSenha(), usuario.get().getSenha())) { // o matches faz o comparativo da
-																					// senhas digitada no front para
-																					// senha criptografada no banco
 
-				String auth = user.get().getUserName() + ":" + user.get().getSenha();
-				byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-				String authHeader = "Basic " + new String(encodedAuth);
+        }
 
-				user.get().setToken(authHeader);
-				user.get().setNome(usuario.get().getNome());
-				user.get().setSenha(usuario.get().getSenha());
-				user.get().setTelefone(usuario.get().getTelefone());
-				user.get().setId(usuario.get().getIdUsuario());
+        return Optional.empty();
+    }
 
-				return user;
+    public Optional<UserLogin> Logar(Optional<UserLogin> user) {
 
-			}
-		}
-		return Optional.ofNullable(null);
-	}
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        Optional<Usuario> usuario = repository.findByUserNameContainingIgnoreCase(user.get().getUserName());
+
+        if (usuario.isPresent()) {
+            if (encoder.matches(user.get().getSenha(), usuario.get().getSenha())) { // o matches faz o comparativo da
+                // senhas digitada no front para
+                // senha criptografada no banco
+
+                String auth = user.get().getUserName() + ":" + user.get().getSenha();
+                byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+                String authHeader = "Basic " + new String(encodedAuth);
+
+                user.get().setToken(authHeader);
+                user.get().setNome(usuario.get().getNome());
+                user.get().setSenha(usuario.get().getSenha());
+                user.get().setTelefone(usuario.get().getTelefone());
+                user.get().setId(usuario.get().getIdUsuario());
+
+                return user;
+
+            }
+        }
+        return Optional.ofNullable(null);
+    }
+
+    public Usuario converterUserUpdateForm(UsuarioAtualizarForm user) {
+
+        Usuario usuario = repository.findById(user.getId()).get();
+
+        if (user.getNome() != null) {
+            usuario.setNome(user.getNome());
+        }
+        if (user.getTelefone() != null) {
+            usuario.setTelefone(user.getTelefone());
+        }
+        if (user.getUserName() != null) {
+            usuario.setUserName(user.getUserName());
+        }
+        return usuario;
+    }
 
 
 }

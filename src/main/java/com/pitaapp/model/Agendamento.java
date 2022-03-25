@@ -27,7 +27,7 @@ public class Agendamento {
     private String horario;
 
     @NotNull
-    private String statusAgendamento;
+    private StatusAgendamento statusAgendamento;
 
     @Fetch(FetchMode.SELECT)
     @ManyToMany(fetch = FetchType.EAGER)
@@ -41,12 +41,12 @@ public class Agendamento {
     private Usuario usuario;
 
 
-    public Agendamento(String dataAgendamento, String horario, List<Servico> servico, Usuario user) {
+    public Agendamento(String dataAgendamento, String horario, List<Servico> servico, Usuario user, StatusAgendamento statusAgendamento) {
         this.dataAgendamento = dataAgendamento;
         this.horario = horario;
         this.servicos = servico;
         this.usuario = user;
-        this.statusAgendamento = "Aguardando";
+        this.statusAgendamento = statusAgendamento;
     }
 
 
