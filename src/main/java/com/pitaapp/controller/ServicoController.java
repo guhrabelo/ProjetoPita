@@ -1,7 +1,10 @@
 package com.pitaapp.controller;
 
+import com.pitaapp.form.ServicoAtualizarForm;
+import com.pitaapp.form.ServicoForm;
 import com.pitaapp.model.Servico;
 import com.pitaapp.repository.ServicoRepository;
+import com.pitaapp.service.ServicoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,8 @@ public class ServicoController {
 
     @Autowired
     ServicoRepository repository;
-
+    @Autowired
+    ServicoService servicoService;
 
     @GetMapping("/all")
     public ResponseEntity<List<Servico>> getAll() {
@@ -29,13 +33,13 @@ public class ServicoController {
     }
 
     @PostMapping
-    public ResponseEntity<Servico> postServico(@RequestBody Servico servico) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(servico));
+    public ResponseEntity<Servico> postServico(@RequestBody ServicoForm servicoForm) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(servicoService.cadastroServico(servicoForm));
     }
 
     @PutMapping
-    public ResponseEntity<Servico> putServico(@RequestBody Servico servico) {
-        return ResponseEntity.status(HttpStatus.OK).body(repository.save(servico));
+    public ResponseEntity<Servico> putServico(@RequestBody ServicoAtualizarForm servicoAtualizarForm) {
+        return ResponseEntity.status(HttpStatus.OK).body(servicoService.atualizarServico(servicoAtualizarForm));
     }
 
     @DeleteMapping("/{id}")

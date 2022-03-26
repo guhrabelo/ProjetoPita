@@ -37,6 +37,7 @@ public class AgendamentoService {
         Agendamento agendamento = new Agendamento(agendamentoForm.getDataAgendamento(), agendamentoForm.getHorario(), servicos, user, statusAgendamento);
         List<Agendamento> agendamentosUser = user.getAgendamento();
         agendamentosUser.add(agendamento);
+        agendamentoRepository.save(agendamento);
 
         return agendamento;
     }
@@ -55,7 +56,7 @@ public class AgendamentoService {
             }
             agendamento.setServicos(servicos);
         }
+        agendamentoRepository.save(agendamento);
         return agendamento;
     }
-
 }

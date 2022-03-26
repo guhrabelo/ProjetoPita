@@ -40,7 +40,6 @@ public class AgendamentoController {
     public ResponseEntity<Agendamento> postAgendamento(@RequestBody AgendamentoForm agendamentoForm, UriComponentsBuilder uriBuilder) {
 
         Agendamento agendamento = agendamentoService.convert(agendamentoForm);
-        repository.save(agendamento);
         URI uri = uriBuilder.path("/agendameto/{id}").buildAndExpand(agendamento.getIdAgendamento()).toUri();
 
         return ResponseEntity.created(uri).body(agendamento);
